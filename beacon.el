@@ -308,13 +308,10 @@ Only returns `beacon-size' elements."
 (defun beacon--shine ()
   "Shine a beacon at point."
   ;; if there is enough space we go forward, else backward
-  ;; Available space is:
-  ;;    (last-column - current column) + (window-width - last-column-position)
   (let* ((colors (beacon--color-range))
-         (end (save-excursion (end-of-visual-line) (current-column)))
-         (available (+ (- end (current-column))
-                       (- (window-body-width)
-                          (mod end (window-body-width)))))
+         (available (1+ (/ (- (nth 2 (window-edges nil t t t))
+                              (car (window-absolute-pixel-position)))
+                           (window-font-width))))
          (forward (if (or (not beacon-can-go-backwards)
                           (> available beacon-size))
                       t
