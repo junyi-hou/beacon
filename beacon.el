@@ -311,12 +311,12 @@ Only returns `beacon-size' elements."
   ;; Available space is:
   ;;    (last-column - current column) + (window-width - last-column-position)
   (let* ((colors (beacon--color-range))
-         (end (save-excursion (end-of-line) (current-column)))
+         (end (save-excursion (end-of-visual-line) (current-column)))
          (available (+ (- end (current-column))
                        (- (window-body-width)
                           (mod end (window-body-width)))))
          (forward (if (or (not beacon-can-go-backwards)
-                       (> available beacon-size))
+                          (> available beacon-size))
                       t
                     nil)))
     (save-excursion
