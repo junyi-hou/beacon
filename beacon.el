@@ -425,28 +425,27 @@ The same is true for DELTA-X and horizonta movement."
 
 (defun beacon--post-command ()
   "Blink if point moved very far."
-  (cond
-   ;; Sanity check.
-   ((not (markerp beacon--previous-place)))
-   ;; Blink for switching buffers.
-   ((and beacon-blink-when-buffer-changes
-         (not (eq (marker-buffer beacon--previous-place)
-                  (current-buffer))))
-    (beacon-blink-automated))
-   ;; Blink for switching windows.
-   ((and beacon-blink-when-window-changes
-         (not (eq beacon--previous-window (selected-window))))
-    (beacon-blink-automated))
-   ;; Blink for scrolling.
-   ((and beacon--window-scrolled
-         (equal beacon--window-scrolled (selected-window)))
-    (beacon-blink-automated))
-   ;; Blink for movement
-   ((beacon--movement-> beacon-blink-when-point-moves-vertically
-                  beacon-blink-when-point-moves-horizontally)
-    (beacon-blink-automated)))
-  (beacon--maybe-push-mark)
-  (setq beacon--window-scrolled nil))
+  (ignore-errors
+    (cond
+     ;; Blink for switching buffers.
+     ((and beacon-blink-when-buffer-changes
+           (not (eq (marker-buffer beacon--previous-place)
+                    (current-buffer))))
+      (beacon-blink-automated))
+     ;; Blink for switching windows.
+     ((and beacon-blink-when-window-changes
+           (not (eq beacon--previous-window (selected-window))))
+      (beacon-blink-automated))
+     ;; Blink for scrolling.
+     ((and beacon--window-scrolled
+           (equal beacon--window-scrolled (selected-window)))
+      (beacon-blink-automated))
+     ;; Blink for movement
+     ((beacon--movement-> beacon-blink-when-point-moves-vertically
+                          beacon-blink-when-point-moves-horizontally)
+      (beacon-blink-automated)))
+    (beacon--maybe-push-mark)
+    (setq beacon--window-scrolled nil)))
 
 (defun beacon--window-scroll-function (win start-pos)
   "Blink the beacon or record that window has been scrolled.
